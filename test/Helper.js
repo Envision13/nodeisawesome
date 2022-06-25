@@ -1,4 +1,4 @@
-const { Profile, Contract } = require('../src/model');
+const { Profile, Contract, Job } = require('../src/model');
 const ContractService = require('../src/ContractService')
 const contractService = new ContractService()
 
@@ -28,13 +28,32 @@ class Helper {
     const dbContract = await Contract.create(contractToBeCreated)
     return dbContract.dataValues
   }
-  
+
+  static async createJob (job, contractId) {
+    const now = new Date()
+    const jobToBeCreated = {
+      description: 'fullstack',
+      price: 40000,
+      paid: false,
+      paymentDate: now.toISOString(), 
+      ContractId: contractId,
+      ...job
+    }
+
+    const dbJob = await Job.create(jobToBeCreated)
+    return dbJob.dataValues
+  }
+
   static async getContractById (userId, contractId) {
     return contractService.getContractById(userId, contractId)
   }
 
   static async getActiveContracts (userId) {
     return contractService.getActiveContracts(userId)
+  }
+
+  static async getActiveUnpaidJobs (userId) {
+    return contractService.getActiveUnpaidJobs(userId)
   }
 }
 

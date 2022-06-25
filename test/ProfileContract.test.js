@@ -2,9 +2,9 @@ const Helper = require('./Helper')
 
 var assert = require('assert')
 
-describe('APP TEST', function () {
+describe('Contracts', function () {
   describe('Contracts', function () {
-    it('it should return the contract only if it belongs to the profile calling', async () => {
+    it('should return the contract only if it belongs to the profile calling', async () => {
       const randomUser = await Helper.createProfile({})
       const client = await Helper.createProfile({})
       const contractor = await Helper.createProfile({ type: 'contractor'})
@@ -37,7 +37,7 @@ describe('APP TEST', function () {
       assert.deepStrictEqual(invalidClient, null, 'The user does not have permissions')
     })
 
-    it('it should return only active contracts of a user', async () => {
+    it('should return only active contracts of a user', async () => {
       const randomUser = await Helper.createProfile({})
       const client = await Helper.createProfile({})
       const contractor = await Helper.createProfile({ type: 'contractor'})
@@ -66,6 +66,30 @@ describe('APP TEST', function () {
         status: thirdContract.status,
         terms: thirdContract.terms,
       }])
+    })
+  })
+
+  describe('Jobs', function () {
+    it('should return the jobs of active contracts of a user', async () => {
+      const client = await Helper.createProfile({})
+      const contractor = await Helper.createProfile({ type: 'contractor'})
+      const contract = await Helper.createContract({}, client.id, contractor.id)
+      const firstJob = await Helper.createJob({ description: 'security'}, contract.id)
+      const secondJob = await Helper.createJob({}, contract.id)
+      const thirdJob = await Helper.createJob({}, contract.id)
+      const getActiveUnpaidJobs = await Helper.getActiveUnpaidJobs(client.id)
+      assert.deepStrictEqual(getActiveUnpaidJobs.length, 3)
+      delete getActiveUnpaidJobs[2].createdAt
+      delete getActiveUnpaidJobs[2].updatedAt
+      assert.deepStrictEqual(getActiveUnpaidJobs[2], {
+        ContractId: contract.id,
+        description: firstJob.description,
+        id: firstJob.id,
+        paid: firstJob.paid,
+        paymentDate: firstJob.paymentDate,
+        price: firstJob.price
+      })
+
     })
   })
 })
