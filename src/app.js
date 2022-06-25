@@ -14,5 +14,11 @@ app.get('/contracts/:id', getProfile, async (req, res) => {
   res.json(contract)
 })
 
+app.get('/contracts', getProfile, async (req, res) => {
+  const contracts = await contractService.getActiveContracts(req.profile.id)
+  if (!contracts) return res.status(404).end()
+  res.json(contracts)
+})
+
 
 module.exports = app

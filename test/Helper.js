@@ -32,6 +32,10 @@ class Helper {
   static async getContractById (userId, contractId) {
     return contractService.getContractById(userId, contractId)
   }
+
+  static async getActiveContracts (userId) {
+    return contractService.getActiveContracts(userId)
+  }
 }
 
 module.exports = Helper

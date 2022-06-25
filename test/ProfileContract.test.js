@@ -36,5 +36,36 @@ describe('APP TEST', function () {
       const invalidClient = await Helper.getContractById(randomUser.id, contract.id)
       assert.deepStrictEqual(invalidClient, null, 'The user does not have permissions')
     })
+
+    it('it should return only active contracts of a user', async () => {
+      const randomUser = await Helper.createProfile({})
+      const client = await Helper.createProfile({})
+      const contractor = await Helper.createProfile({ type: 'contractor'})
+      const firstContract = await Helper.createContract({}, client.id, contractor.id)
+      const secondContract = await Helper.createContract({}, randomUser.id, contractor.id)
+      const thirdContract = await Helper.createContract({status: 'in_progress'}, client.id, randomUser.id)
+      const fourthContract = await Helper.createContract({status: 'terminated'}, client.id, randomUser.id)
+
+      const getActiveContracts = await Helper.getActiveContracts(randomUser.id)
+      assert.deepStrictEqual(getActiveContracts.length, 2)
+
+      delete getActiveContracts[0].createdAt
+      delete getActiveContracts[0].updatedAt
+      delete getActiveContracts[1].createdAt
+      delete getActiveContracts[1].updatedAt
+      assert.deepStrictEqual(getActiveContracts, [{
+        ClientId: randomUser.id,
+        ContractorId: contractor.id,
+        id: secondContract.id,
+        status: secondContract.status,
+        terms: secondContract.terms,
+      }, {
+        ClientId: client.id,
+        ContractorId: randomUser.id,
+        id: thirdContract.id,
+        status: thirdContract.status,
+        terms: thirdContract.terms,
+      }])
+    })
   })
 })
