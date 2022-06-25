@@ -26,5 +26,11 @@ app.get('/jobs/unpaid', getProfile, async (req, res) => {
   res.json(jobs)
 })
 
+app.get('/jobs/:job_id/pay', getProfile, async (req, res) => {
+  const { job_id } = req.params
+  const paymentStatus = await contractService.payJob(req.profile.id, job_id)
+  res.json(paymentStatus)
+})
+
 
 module.exports = app

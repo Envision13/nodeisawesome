@@ -85,11 +85,27 @@ describe('Contracts', function () {
         ContractId: contract.id,
         description: firstJob.description,
         id: firstJob.id,
-        paid: firstJob.paid,
-        paymentDate: firstJob.paymentDate,
+        paid: null,
+        paymentDate: null,
         price: firstJob.price
       })
+    })
 
+    it('should pay for a job', async () => {
+      const client = await Helper.createProfile({ balance: 1000 })
+      const contractor = await Helper.createProfile({ type: 'contractor', balance: 0 })
+      const contract = await Helper.createContract({}, client.id, contractor.id)
+      const firstJob = await Helper.createJob({ description: 'security', price: 700 }, contract.id)
+      const payJob = await Helper.payJob(client.id, firstJob.id)
+      const clientAfterPayment = await Helper.getProfile(client.id)
+      const contractorAfterPayment = await Helper.getProfile(contractor.id)
+      assert.deepStrictEqual(clientAfterPayment.balance, 300)
+      assert.deepStrictEqual(contractorAfterPayment.balance, 700)
+      const jobAfterPayment = await Helper.getJob(firstJob.id)
+      assert.deepStrictEqual(jobAfterPayment.paid, true)
+      assert.ok(jobAfterPayment.paymentDate)
     })
   })
 })
+
+//

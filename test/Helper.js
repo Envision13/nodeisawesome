@@ -16,6 +16,16 @@ class Helper {
     return dbProfile.dataValues
   }
 
+  static async getProfile (id) {
+    const profile = await Profile.findOne({
+      where: {
+        id: id
+      }
+    })
+    if (!profile) return null
+    return profile.dataValues
+  }
+
   static async createContract (contract, clientId, contractorId) {
     const contractToBeCreated = {
       terms: 'hue hue hue',
@@ -34,8 +44,8 @@ class Helper {
     const jobToBeCreated = {
       description: 'fullstack',
       price: 40000,
-      paid: false,
-      paymentDate: now.toISOString(), 
+      // paid: false,
+      // paymentDate: now.toISOString(), 
       ContractId: contractId,
       ...job
     }
@@ -43,6 +53,21 @@ class Helper {
     const dbJob = await Job.create(jobToBeCreated)
     return dbJob.dataValues
   }
+
+  static async getJob (id) {
+    const job = await Job.findOne({
+      where: {
+        id: id
+      }
+    })
+    if (!job) return null
+    return job.dataValues
+  }
+
+  static async payJob (clientId, contractId) {
+    return contractService.payJob(clientId, contractId)
+  }
+  
 
   static async getContractById (userId, contractId) {
     return contractService.getContractById(userId, contractId)
