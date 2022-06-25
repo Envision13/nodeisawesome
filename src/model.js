@@ -2,8 +2,8 @@ const Sequelize = require('sequelize')
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite3'
-});
+  storage: './database.sqlite'
+})
 
 class Profile extends Sequelize.Model {}
 Profile.init(
@@ -31,7 +31,7 @@ Profile.init(
     sequelize,
     modelName: 'Profile'
   }
-);
+)
 
 class Contract extends Sequelize.Model {}
 Contract.init(
@@ -48,7 +48,7 @@ Contract.init(
     sequelize,
     modelName: 'Contract'
   }
-);
+)
 
 class Job extends Sequelize.Model {}
 Job.init(

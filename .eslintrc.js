@@ -1,4 +1,5 @@
 module.exports = {
+  plugins: ['mocha'],
   env: {
     browser: true,
     commonjs: true,
