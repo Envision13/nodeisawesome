@@ -115,7 +115,7 @@ class ContractService {
         ContractId: { [Op.in]: clientContracts.map(contract => contract.dataValues.id) },
       }
     })
-    if (deposit > (25/100*clientJobsSum)) { return false }
+    if (deposit > (25 / 100 * clientJobsSum)) { return false }
 
     // make deposit here
     client.balance = client.balance + deposit

@@ -3,6 +3,10 @@ const bodyParser = require('body-parser')
 const { getProfile } = require('./middleware/getProfile')
 const ContractService = require('./ContractService')
 
+/*
+  npm run test - to test the Business Logic
+*/
+
 const app = express()
 app.use(bodyParser.json())
 const contractService = new ContractService()
@@ -42,5 +46,62 @@ app.post('/balances/deposit/:userId', getProfile, async (req, res) => {
   const makeDeposit = await contractService.makeDeposit(userId, req.body.deposit)
   res.json(makeDeposit)
 })
+
+app.get('/admin/best-profession?start=<date>&end=<date></date>', getProfile, async (req, res) => {
+  const { start, end } = req.params
+
+  /* 
+    get contractors
+  [
+    id, profession1
+    id, profession2
+  ]
+
+  Profession1 : ContractorId, id, id
+  Profession2: ContractorId, id, id
+
+  Profession1: Contracts id, id, id ... 
+  Profession2: Contracts id, id, id ...
+
+  Profession1: get jobs by Contract id ( where createdAt is in interval - stard/end) -> jobid id id ... ... returns SUM <paid>
+  Profession2: get jobs by Contract id ( where createdAt is in interval - stard/end) -> jobid id id ... ... returns SUM <paid>
+
+  key            value
+  profession     total (SUM paid)
+  profession2    total2
+
+  create an array of the above key values objects .. [{profession: programmer, income: x}]
+  sort array by income
+  return the array
+  */
+  return true
+})
+
+app.get('/admin/best-clients?start=<date>&end=<date>&limit=<integer>', getProfile, async (req, res) => {
+  const { start, end } = req.params
+
+  /*
+     with this limit taking in mind, it would be better to make this "get" explained in pseudocode above, done by SQL.
+     without limit, the pseudo code above would work good enough, a lot of System - DB processing a lot, but it would be ok.
+     with limit, would be also ok but not as great as using sql only
+
+     About using sql only to get the most paid professions in an interval:
+      - select contactors group by profession -> 
+        -> sub query select * from contracts where contract id IN ..
+          -> select jobs apply filters - returns somehow SUM(paid)
+      .sort(by total)
+      .limit(10)
+
+      I might be wrong, it seems like to compute all of this, requires to load every resource therefore the db processing will be the same as described in the route before.
+
+      I would sugest to make it work in a nodejs - js - db way, not using only one query . ( or ask a SQL EXPERT)
+
+  */
+
+  return true
+})
+
+
+
 
 module.exports = app
