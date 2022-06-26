@@ -106,6 +106,22 @@ describe('Contracts', function () {
       assert.ok(jobAfterPayment.paymentDate)
     })
   })
-})
 
-//
+  describe('Profile', function () {
+    it.only('should make a deposit', async () => {
+      const client = await Helper.createProfile({ balance: 1000 })
+      const contractor = await Helper.createProfile({ type: 'contractor', balance: 0 })
+      const firstContract = await Helper.createContract({ price: 400 }, client.id, contractor.id)
+      const secondContract = await Helper.createContract({ price: 600 }, client.id, contractor.id)
+
+      const firstJob = await Helper.createJob({ description: 'deposit test', price: 700 }, firstContract.id)
+      const secondJob = await Helper.createJob({ description: 'deposit test', price: 300 }, secondContract.id)
+
+      const makeDeposit = await Helper.makeDeposit(client.id, 250)
+      assert.deepStrictEqual(makeDeposit, true)
+
+      const makeDepositFail = await Helper.makeDeposit(client.id, 251)
+      assert.deepStrictEqual(makeDepositFail, false)
+    })
+  })
+})

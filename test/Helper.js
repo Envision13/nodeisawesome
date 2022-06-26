@@ -67,7 +67,10 @@ class Helper {
   static async payJob (clientId, contractId) {
     return contractService.payJob(clientId, contractId)
   }
-  
+ 
+  static async makeDeposit (userId, deposit) {
+    return contractService.makeDeposit(userId, deposit)
+  }
 
   static async getContractById (userId, contractId) {
     return contractService.getContractById(userId, contractId)

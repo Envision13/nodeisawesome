@@ -94,6 +94,34 @@ class ContractService {
     await job.save()
     return true
   }
+
+  async makeDeposit(userId, deposit) {
+    const client = await Profile.findOne({
+      where: {
+        id: userId
+      }
+    })
+    if (client.dataValues.type !== 'client') { return false }
+    const clientContracts = await Contract.findAll({
+      where: {
+        [Op.or]: [ { ClientId: userId }],
+        status: {
+          [Op.or]: ['new', 'in_progress']
+        }
+      }
+    })
+    const clientJobsSum = await Job.sum('price', { 
+      where: {
+        ContractId: { [Op.in]: clientContracts.map(contract => contract.dataValues.id) },
+      }
+    })
+    if (deposit > (25/100*clientJobsSum)) { return false }
+
+    // make deposit here
+    client.balance = client.balance + deposit
+    await client.save()
+    return true
+  }
 }
 
 module.exports = ContractService

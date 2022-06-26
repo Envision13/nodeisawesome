@@ -26,11 +26,21 @@ app.get('/jobs/unpaid', getProfile, async (req, res) => {
   res.json(jobs)
 })
 
-app.get('/jobs/:job_id/pay', getProfile, async (req, res) => {
+app.post('/jobs/:job_id/pay', getProfile, async (req, res) => {
   const { job_id } = req.params
   const paymentStatus = await contractService.payJob(req.profile.id, job_id)
   res.json(paymentStatus)
 })
 
+app.post('/balances/deposit/:userId', getProfile, async (req, res) => {
+  const { userId } = req.params
+  if (parseInt(userId) !== req.profile.id) {
+    res.json(false)
+    return 
+  }
+
+  const makeDeposit = await contractService.makeDeposit(userId, req.body.deposit)
+  res.json(makeDeposit)
+})
 
 module.exports = app
