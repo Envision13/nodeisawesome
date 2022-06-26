@@ -81,7 +81,10 @@ app.get('/admin/best-clients?start=<date>&end=<date>&limit=<integer>', getProfil
   const { start, end } = req.params
 
   /*
-     with this limit taking in mind, it would be better to make this "get" explained in pseudocode above, done by SQL.
+  
+  PS I thought that the last route is the same as the previous one except that it has "limit"
+
+  with this limit taking in mind, it would be better to make this "get" explained in pseudocode above, done by SQL.
      without limit, the pseudo code above would work good enough, a lot of System - DB processing a lot, but it would be ok.
      with limit, would be also ok but not as great as using sql only
 
