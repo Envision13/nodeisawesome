@@ -108,7 +108,7 @@ describe('Contracts', function () {
   })
 
   describe('Profile', function () {
-    it.only('should make a deposit', async () => {
+    it('should make a deposit', async () => {
       const client = await Helper.createProfile({ balance: 1000 })
       const contractor = await Helper.createProfile({ type: 'contractor', balance: 0 })
       const firstContract = await Helper.createContract({ price: 400 }, client.id, contractor.id)
